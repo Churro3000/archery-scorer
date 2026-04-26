@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Icons</title>
+</head>
+<body>
+    <h2>Icon Generator</h2>
+    <p>Right-click each canvas and "Save image as..."</p>
+    
+    <h3>Save as: icon-192.png</h3>
+    <canvas id="icon192" width="192" height="192"></canvas>
+    
+    <h3>Save as: icon-512.png</h3>
+    <canvas id="icon512" width="512" height="512"></canvas>
+
+    <script>
+        function drawIcon(canvas) {
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width;
+            
+            ctx.fillStyle = '#1a472a';
+            ctx.fillRect(0, 0, size, size);
+            
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const maxRadius = size * 0.35;
+            
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = size * 0.02;
+            
+            for (let i = 3; i >= 1; i--) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, (maxRadius / 3) * i, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, maxRadius / 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            const arrowY = centerY + maxRadius * 1.3;
+            const arrowSize = size * 0.15;
+            ctx.moveTo(centerX, arrowY - arrowSize);
+            ctx.lineTo(centerX - arrowSize/2, arrowY);
+            ctx.lineTo(centerX - arrowSize/4, arrowY);
+            ctx.lineTo(centerX - arrowSize/4, arrowY + arrowSize);
+            ctx.lineTo(centerX + arrowSize/4, arrowY + arrowSize);
+            ctx.lineTo(centerX + arrowSize/4, arrowY);
+            ctx.lineTo(centerX + arrowSize/2, arrowY);
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        drawIcon(document.getElementById('icon192'));
+        drawIcon(document.getElementById('icon512'));
+    </script>
+</body>
+</html>

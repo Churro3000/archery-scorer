@@ -1,0 +1,217 @@
+cat > index.html << 'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a472a">
+    <title>Archery Scorer</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <button class="nav-btn active" data-view="scan">📷 Scan</button>
+            <button class="nav-btn" data-view="manual">✏️ Manual</button>
+            <button class="nav-btn" data-view="results">📊 Results</button>
+            <button class="nav-btn" data-view="export">📄 Export</button>
+        </nav>
+
+        <!-- Scan View -->
+        <div id="scan-view" class="view active">
+            <div class="scan-container">
+                <h2>Scan Scorecard</h2>
+                <div class="camera-container">
+                    <video id="camera" autoplay playsinline></video>
+                    <canvas id="canvas" style="display: none;"></canvas>
+                    <div class="camera-overlay">
+                        <div class="scan-frame"></div>
+                        <p class="scan-instruction">Align scorecard within frame</p>
+                    </div>
+                </div>
+                <div class="camera-controls">
+                    <button id="start-camera" class="btn btn-primary">Start Camera</button>
+                    <button id="capture" class="btn btn-success" style="display: none;">Capture & Analyze</button>
+                    <button id="stop-camera" class="btn btn-secondary" style="display: none;">Stop Camera</button>
+                </div>
+                <div id="processing-status" class="status-message" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Analyzing scorecard...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Entry View -->
+        <div id="manual-view" class="view">
+            <div class="form-container">
+                <h2>Manual Entry</h2>
+                <button id="new-manual-entry" class="btn btn-primary">+ New Entry</button>
+            </div>
+        </div>
+
+        <!-- Score Entry Form -->
+        <div id="score-form" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="form-title">Score Entry</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <form id="archer-form">
+                    <div class="form-section">
+                        <h4>Archer Details</h4>
+                        <div class="form-group">
+                            <label>Archer Name</label>
+                            <input type="text" id="archer-name" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="category" required>
+                                    <option value="">Select...</option>
+                                    <option value="AAG">AAG</option>
+                                    <option value="Seniors">Seniors</option>
+                                    <option value="Juniors">Juniors</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <select id="gender" required>
+                                    <option value="">Select...</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Club</label>
+                                <select id="club" required>
+                                    <option value="">Select...</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Hogs">Hogs</option>
+                                    <option value="Valley">Valley</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Round 1 - 10m Distance</h4>
+                        <div class="distance-sections">
+                            <div class="section-group">
+                                <label>Section 1 (5 arrows)</label>
+                                <div class="arrow-inputs" id="r1-10m-s1"></div>
+                                <div class="section-total">Total: <span>0</span></div>
+                            </div>
+                            <div class="section-group">
+                                <label>Section 2 (5 arrows)</label>
+                                <div class="arrow-inputs" id="r1-10m-s2"></div>
+                                <div class="section-total">Total: <span>0</span></div>
+                            </div>
+                            <div class="section-group">
+                                <label>Section 3 (5 arrows)</label>
+                                <div class="arrow-inputs" id="r1-10m-s3"></div>
+                                <div class="section-total">Total: <span>0</span></div>
+                            </div>
+                        </div>
+                        <div class="distance-total">10m Total: <span>0</span></div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Round 1 - 15m Distance</h4>
+                        <div class="distance-sections">
+                            <div class="section-group">
+                                <label>Section 1 (5 arrows)</label>
+                                <div class="arrow-inputs" id="r1-15m-s1"></div>
+                                <div class="section-total">Total: <span>0</span></div>
+                            </div>
+                            <div class="section-group">
+                                <label>Section 2 (5 arrows)</label>
+                                <div class="arrow-inputs" id="r1-15m-s2"></div>
+                                <div class="section-total">Total: <span>0</span></div>
+                            </div>
+                            <div class="section-group">
+                                <label>Section 3 (5 arrows)</label>
+                                <div class="arrow-inputs" id="r1-15m-s3"></div>
+                                <div class="section-total">Total: <span>0</span></div>
+                            </div>
+                        </div>
+                        <div class="distance-total">15m Total: <span>0</span></div>
+                    </div>
+
+                    <div class="round-total">
+                        <strong>Round 1 Total: <span id="r1-total">0</span> / 300</strong>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary cancel-form">Cancel</button>
+                        <button type="submit" class="btn btn-success">Save Score</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results View -->
+        <div id="results-view" class="view">
+            <div class="results-container">
+                <h2>Tournament Results</h2>
+                <div class="results-controls">
+                    <div class="filter-group">
+                        <label>Filter by Category:</label>
+                        <select id="filter-category">
+                            <option value="all">All Categories</option>
+                            <option value="AAG">AAG</option>
+                            <option value="Seniors">Seniors</option>
+                            <option value="Juniors">Juniors</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Filter by Gender:</label>
+                        <select id="filter-gender">
+                            <option value="all">All</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Filter by Club:</label>
+                        <select id="filter-club">
+                            <option value="all">All Clubs</option>
+                            <option value="Active">Active</option>
+                            <option value="Hogs">Hogs</option>
+                            <option value="Valley">Valley</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="results-display">
+                    <p class="no-results">No scores recorded yet. Start scanning or entering scores!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export View -->
+        <div id="export-view" class="view">
+            <div class="export-container">
+                <h2>Export Results</h2>
+                <div class="export-options">
+                    <button id="generate-pdf" class="btn btn-primary">📄 Generate PDF Report</button>
+                    <button id="sync-database" class="btn btn-success">☁️ Sync to Database</button>
+                    <button id="export-csv" class="btn btn-secondary">📊 Export CSV</button>
+                </div>
+                <div id="sync-status" class="status-message" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="storage.js"></script>
+    <script src="camera.js"></script>
+    <script src="scoring.js"></script>
+    <script src="results.js"></script>
+    <script src="export.js"></script>
+    <script src="database.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+EOF
