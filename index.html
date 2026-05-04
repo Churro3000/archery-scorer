@@ -1,4 +1,3 @@
-cat > index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +21,6 @@ cat > index.html << 'EOF'
         <!-- Scan View -->
         <div id="scan-view" class="view active">
             <div class="scan-container">
-                <h2>Scan Scorecard</h2>
                 <div class="camera-container">
                     <video id="camera" autoplay playsinline></video>
                     <canvas id="canvas" style="display: none;"></canvas>
@@ -33,13 +31,13 @@ cat > index.html << 'EOF'
                 </div>
                 <div class="camera-controls">
                     <button id="start-camera" class="btn btn-primary">📷 Start Camera</button>
-                    <button id="capture" class="btn btn-success" style="display: none;">✅ Capture & Analyze</button>
+                    <button id="capture" class="btn btn-success" style="display: none;">✅ Capture</button>
                     <button id="restart-scan" class="btn btn-warning" style="display: none;">🔄 Rescan</button>
-                    <button id="stop-camera" class="btn btn-secondary" style="display: none;">❌ Stop Camera</button>
+                    <button id="stop-camera" class="btn btn-secondary" style="display: none;">❌ Stop</button>
                 </div>
                 <div id="processing-status" class="status-message" style="display: none;">
                     <div class="spinner"></div>
-                    <p>Analyzing scorecard...</p>
+                    <p>Processing scorecard...</p>
                 </div>
             </div>
         </div>
@@ -52,23 +50,23 @@ cat > index.html << 'EOF'
             </div>
         </div>
 
-        <!-- Score Entry Form -->
+        <!-- Score Entry Form (Scorecard Style) -->
         <div id="score-form" class="modal" style="display: none;">
-            <div class="modal-content">
+            <div class="modal-content scorecard-style">
                 <div class="modal-header">
-                    <h3 id="form-title">Score Entry</h3>
+                    <h3>Scorecard Entry</h3>
                     <button class="close-modal">&times;</button>
                 </div>
                 <form id="archer-form">
-                    <div class="form-section">
-                        <h4>Archer Details</h4>
+                    <!-- Archer Details -->
+                    <div class="form-section archer-info">
                         <div class="form-group">
-                            <label>Archer Name</label>
+                            <label>NAME</label>
                             <input type="text" id="archer-name" required>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Category</label>
+                                <label>CATEGORY</label>
                                 <select id="category" required>
                                     <option value="">Select...</option>
                                     <option value="AAG">AAG</option>
@@ -77,15 +75,15 @@ cat > index.html << 'EOF'
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Gender</label>
+                                <label>GENDER</label>
                                 <select id="gender" required>
                                     <option value="">Select...</option>
-                                    <option value="M">Male</option>
-                                    <option value="F">Female</option>
+                                    <option value="M">M</option>
+                                    <option value="F">F</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Club</label>
+                                <label>CLUB</label>
                                 <select id="club" required>
                                     <option value="">Select...</option>
                                     <option value="Active">Active</option>
@@ -96,52 +94,59 @@ cat > index.html << 'EOF'
                         </div>
                     </div>
 
-                    <div class="form-section">
-                        <h4>Round 1 - 10m Distance</h4>
-                        <div class="distance-sections">
-                            <div class="section-group">
-                                <label>Section 1 (5 arrows)</label>
-                                <div class="arrow-inputs" id="r1-10m-s1"></div>
-                                <div class="section-total">Total: <span>0</span></div>
-                            </div>
-                            <div class="section-group">
-                                <label>Section 2 (5 arrows)</label>
-                                <div class="arrow-inputs" id="r1-10m-s2"></div>
-                                <div class="section-total">Total: <span>0</span></div>
-                            </div>
-                            <div class="section-group">
-                                <label>Section 3 (5 arrows)</label>
-                                <div class="arrow-inputs" id="r1-10m-s3"></div>
-                                <div class="section-total">Total: <span>0</span></div>
-                            </div>
+                    <!-- 10 METER Section -->
+                    <div class="distance-section">
+                        <h4 class="distance-title">10 METER</h4>
+                        
+                        <!-- Round 1 -->
+                        <div class="round-section">
+                            <label class="round-label">Section 1</label>
+                            <div id="10m-r1" class="scorecard-grid"></div>
                         </div>
-                        <div class="distance-total">10m Total: <span>0</span></div>
+                        
+                        <!-- Round 2 -->
+                        <div class="round-section">
+                            <label class="round-label">Section 2</label>
+                            <div id="10m-r2" class="scorecard-grid"></div>
+                        </div>
+                        
+                        <!-- Round 3 -->
+                        <div class="round-section">
+                            <label class="round-label">Section 3</label>
+                            <div id="10m-r3" class="scorecard-grid"></div>
+                        </div>
+                        
+                        <div class="section-total-display">10m Total: <span id="total-10m">0</span></div>
                     </div>
 
-                    <div class="form-section">
-                        <h4>Round 1 - 15m Distance</h4>
-                        <div class="distance-sections">
-                            <div class="section-group">
-                                <label>Section 1 (5 arrows)</label>
-                                <div class="arrow-inputs" id="r1-15m-s1"></div>
-                                <div class="section-total">Total: <span>0</span></div>
-                            </div>
-                            <div class="section-group">
-                                <label>Section 2 (5 arrows)</label>
-                                <div class="arrow-inputs" id="r1-15m-s2"></div>
-                                <div class="section-total">Total: <span>0</span></div>
-                            </div>
-                            <div class="section-group">
-                                <label>Section 3 (5 arrows)</label>
-                                <div class="arrow-inputs" id="r1-15m-s3"></div>
-                                <div class="section-total">Total: <span>0</span></div>
-                            </div>
+                    <!-- 15 METER Section -->
+                    <div class="distance-section">
+                        <h4 class="distance-title">15 METER</h4>
+                        
+                        <!-- Round 1 -->
+                        <div class="round-section">
+                            <label class="round-label">Section 1</label>
+                            <div id="15m-r1" class="scorecard-grid"></div>
                         </div>
-                        <div class="distance-total">15m Total: <span>0</span></div>
+                        
+                        <!-- Round 2 -->
+                        <div class="round-section">
+                            <label class="round-label">Section 2</label>
+                            <div id="15m-r2" class="scorecard-grid"></div>
+                        </div>
+                        
+                        <!-- Round 3 -->
+                        <div class="round-section">
+                            <label class="round-label">Section 3</label>
+                            <div id="15m-r3" class="scorecard-grid"></div>
+                        </div>
+                        
+                        <div class="section-total-display">15m Total: <span id="total-15m">0</span></div>
                     </div>
 
-                    <div class="round-total">
-                        <strong>Round 1 Total: <span id="r1-total">0</span> / 300</strong>
+                    <!-- Grand Total -->
+                    <div class="grand-total">
+                        <strong>TOTAL SCORE: <span id="grand-total">0</span> / 300</strong>
                     </div>
 
                     <div class="form-actions">
@@ -158,16 +163,16 @@ cat > index.html << 'EOF'
                 <h2>Tournament Results</h2>
                 <div class="results-controls">
                     <div class="filter-group">
-                        <label>Filter by Category:</label>
+                        <label>Category:</label>
                         <select id="filter-category">
-                            <option value="all">All Categories</option>
+                            <option value="all">All</option>
                             <option value="AAG">AAG</option>
                             <option value="Seniors">Seniors</option>
                             <option value="Juniors">Juniors</option>
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label>Filter by Gender:</label>
+                        <label>Gender:</label>
                         <select id="filter-gender">
                             <option value="all">All</option>
                             <option value="M">Male</option>
@@ -175,9 +180,9 @@ cat > index.html << 'EOF'
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label>Filter by Club:</label>
+                        <label>Club:</label>
                         <select id="filter-club">
-                            <option value="all">All Clubs</option>
+                            <option value="all">All</option>
                             <option value="Active">Active</option>
                             <option value="Hogs">Hogs</option>
                             <option value="Valley">Valley</option>
@@ -215,4 +220,3 @@ cat > index.html << 'EOF'
     <script src="app.js"></script>
 </body>
 </html>
-EOF

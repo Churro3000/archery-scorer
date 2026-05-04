@@ -531,3 +531,141 @@ body {
     color: var(--primary-green);
     margin-bottom: 1.5rem;
 }
+
+/* Scorecard Style Form */
+.scorecard-style {
+    max-width: 900px;
+}
+
+.archer-info {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.archer-info label {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--primary-green);
+}
+
+.distance-section {
+    margin-bottom: 2rem;
+    border: 2px solid var(--primary-green);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.distance-title {
+    background: var(--primary-green);
+    color: white;
+    padding: 0.5rem 1rem;
+    margin: -1rem -1rem 1rem -1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.round-section {
+    margin-bottom: 1rem;
+}
+
+.round-label {
+    display: block;
+    font-weight: 600;
+    color: var(--secondary-green);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.scorecard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.score-row {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+}
+
+.score-circle {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: white;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.score-circle:hover {
+    background: var(--light-green);
+    border-color: var(--accent-green);
+    transform: scale(1.1);
+}
+
+.score-circle.selected {
+    background: var(--primary-green);
+    color: white;
+    border-color: var(--primary-green);
+    transform: scale(1.15);
+}
+
+.section-total-display {
+    background: var(--accent-green);
+    color: white;
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+}
+
+.grand-total {
+    background: var(--primary-green);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.4rem;
+    margin: 1.5rem 0;
+}
+
+.btn-warning {
+    background: var(--warning);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #e76f51;
+}
+
+/* Mobile optimization for circles */
+@media (max-width: 768px) {
+    .score-circle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+    
+    .score-row {
+        gap: 0.15rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .score-circle {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
+    }
+}
