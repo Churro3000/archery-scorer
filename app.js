@@ -34,6 +34,7 @@ class ArcheryScorerApp {
         document.getElementById('start-camera').addEventListener('click', () => this.camera.start());
         document.getElementById('stop-camera').addEventListener('click', () => this.camera.stop());
         document.getElementById('capture').addEventListener('click', () => this.handleCapture());
+        document.getElementById('restart-scan').addEventListener('click', () => this.handleRestart());
 
         // Manual entry
         document.getElementById('new-manual-entry').addEventListener('click', () => this.openScoreForm(null));
@@ -64,10 +65,16 @@ class ArcheryScorerApp {
     async handleCapture() {
         try {
             const scoreData = await this.camera.captureAndAnalyze();
+            this.camera.showRestartButton();
             this.openScoreForm(scoreData);
         } catch (error) {
             alert('Error analyzing scorecard: ' + error.message);
         }
+    }
+
+    handleRestart() {
+        this.camera.hideRestartButton();
+        this.closeScoreForm();
     }
 
     openScoreForm(data) {

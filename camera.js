@@ -21,6 +21,7 @@ class CameraManager {
 
             document.getElementById('start-camera').style.display = 'none';
             document.getElementById('capture').style.display = 'inline-block';
+            document.getElementById('restart-scan').style.display = 'none';
             document.getElementById('stop-camera').style.display = 'inline-block';
 
             console.log('📷 Camera started');
@@ -39,6 +40,7 @@ class CameraManager {
 
         document.getElementById('start-camera').style.display = 'inline-block';
         document.getElementById('capture').style.display = 'none';
+        document.getElementById('restart-scan').style.display = 'none';
         document.getElementById('stop-camera').style.display = 'none';
 
         console.log('🛑 Camera stopped');
@@ -62,6 +64,16 @@ class CameraManager {
         } finally {
             document.getElementById('processing-status').style.display = 'none';
         }
+    }
+
+    showRestartButton() {
+        document.getElementById('capture').style.display = 'none';
+        document.getElementById('restart-scan').style.display = 'inline-block';
+    }
+
+    hideRestartButton() {
+        document.getElementById('capture').style.display = 'inline-block';
+        document.getElementById('restart-scan').style.display = 'none';
     }
 
     async analyzeScorecard(imageData) {
@@ -92,16 +104,25 @@ class CameraManager {
             club: ''
         };
 
+        // Extract name - look for "NAME" label
+        const nameMatch = text.match(/NAME[\s:]*([A-Za-z\s]+)/i);
+        if (nameMatch) {
+            data.name = nameMatch[1].trim();
+        }
+
+        // Category detection
         if (text.includes('AAG')) data.category = 'AAG';
         else if (text.includes('Senior')) data.category = 'Seniors';
         else if (text.includes('Junior')) data.category = 'Juniors';
 
+        // Club detection
         if (text.includes('Active')) data.club = 'Active';
         else if (text.includes('Hogs')) data.club = 'Hogs';
         else if (text.includes('Valley')) data.club = 'Valley';
 
-        if (text.includes(' M ') || text.includes('Male')) data.gender = 'M';
-        else if (text.includes(' F ') || text.includes('Female')) data.gender = 'F';
+        // Gender detection - look for M or F checkbox
+        if (text.includes('|M|') || text.match(/M\s*[✓✗xX]/)) data.gender = 'M';
+        else if (text.includes('|F|') || text.match(/F\s*[✓✗xX]/)) data.gender = 'F';
 
         return data;
     }
